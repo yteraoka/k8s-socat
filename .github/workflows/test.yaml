@@ -1,0 +1,58 @@
+name: Lint, Build and scan container image
+
+on:
+  pull_request:
+
+jobs:
+  lint:
+    name: Lint Dockerfile with hadolint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: Dockerfile
+          failure-threshold: error
+          verbose: true
+
+  build:
+    name: Build and scan container image
+    runs-on: ubuntu-latest
+    permissions:
+      # required for all workflows
+      security-events: write
+      # only required for workflows in private repositories
+      actions: read
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build only
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          load: true
+          push: false
+          tags: k8s-socat:dev
+
+      - name: Dockle
+        uses: erzz/dockle-action@v1
+        with:
+          image: k8s-socat:dev
+          exit-code: '1'
+          failure-threshold: fatal
+
+#      - name: Trivy
+#        uses: aquasecurity/trivy-action@master
+#        with:
+#          image-ref: diag-tools:dev
+#          format: sarif
+#          output: 'trivy-results.sarif'
+#          exit-code: '1'
+#          ignore-unfixed: true
+#          vuln-type: 'os,library'
+#          severity: 'CRITICAL,HIGH'
