@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.0.1](https://github.com/yteraoka/k8s-socat/compare/v1.0.0...v1.0.1) - 2026-10-27
+
+- Docker Hub への push をやめて GHCR のみにする by @yteraoka in https://github.com/yteraoka/k8s-socat/pull/7
+
 ## [v1.0.0](https://github.com/yteraoka/k8s-socat/compare/v0.0.1...v1.0.0) - 2026-10-27
 
 - Dockerfile: base image を debian trixie に更新 by @yteraoka in https://github.com/yteraoka/k8s-socat/pull/3
